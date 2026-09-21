@@ -84,6 +84,8 @@ type Appearance = {
 };
 const today = new Date().toISOString().slice(0, 10);
 const uid = () => crypto.randomUUID();
+const starterBackgroundId = "starter-rainy-window";
+const starterBackgroundUrl = `${import.meta.env.BASE_URL}backgrounds/rainy-window.png`;
 const presets = [
   ["white", "纯净白"],
   ["grey", "雾灰"],
@@ -115,7 +117,8 @@ const presets = [
 const defaultAppearance: Appearance = {
   theme: "blue-daydream",
   uiTheme: "sky",
-  mode: "preset",
+  mode: "image",
+  image: starterBackgroundId,
   brightness: 100,
   imageBlur: 0,
   glass: true,
@@ -374,7 +377,10 @@ function App() {
       ]);
     setDiaryText("");
   };
-  const bgUrl = backgrounds.find((b) => b.id === appearance.image)?.url;
+  const bgUrl =
+    appearance.image === starterBackgroundId
+      ? starterBackgroundUrl
+      : backgrounds.find((b) => b.id === appearance.image)?.url;
   const contentValues = appearance.syncGlass
     ? {
         blur: appearance.blur,
@@ -1876,6 +1882,16 @@ function Background({
             <span>{name}</span>
           </button>
         ))}
+      </div>
+      <p className="setting-label">默认背景</p>
+      <div className="bg-saved">
+        <button
+          className={a.mode === "image" && a.image === starterBackgroundId ? "selected" : ""}
+          onClick={() => setA({ mode: "image", image: starterBackgroundId })}
+        >
+          <img src={starterBackgroundUrl} alt="雨天窗边" />
+          <span>雨天窗边</span>
+        </button>
       </div>
       <p className="setting-label">我的背景收藏</p>
       <label className="upload">
