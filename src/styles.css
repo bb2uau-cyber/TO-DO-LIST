@@ -1019,6 +1019,39 @@ input[type="range"] {
   .editor-columns { grid-template-columns: minmax(0, 1fr); }
   .task-editor footer { align-items: stretch; }
 }
+
+/* One visual system for every primary planner panel. Keep this last so legacy
+   generated rules cannot make individual day/week/month/year panels diverge. */
+.workbench,
+.planner-toolbar,
+.workbench > .topbar,
+.stat,
+.progress-stat,
+.task-card,
+.week-schedule > header,
+.week-head-spacer,
+.time-rail,
+.week-day,
+.calendar,
+.selected-day,
+.year-overview,
+.month-card,
+.diary-editor,
+.diary-history {
+  background: color-mix(in srgb, var(--content-color) calc(var(--content-alpha) * 100%), transparent) !important;
+  border-color: color-mix(in srgb, var(--workbench-border-color) calc(var(--content-border) * 100%), transparent) !important;
+  box-shadow: 0 var(--content-shadow) calc(var(--content-shadow) * 2) color-mix(in srgb, var(--color-ink) 10%, transparent) !important;
+  backdrop-filter: blur(var(--content-blur)) saturate(1.08) !important;
+  -webkit-backdrop-filter: blur(var(--content-blur)) saturate(1.08) !important;
+}
+.workbench { border-radius: var(--workbench-radius) !important; }
+.week-task,
+.schedule-task,
+.timed-task,
+.month-card.current {
+  background: color-mix(in srgb, var(--content-color) calc(var(--content-alpha) * 100%), transparent) !important;
+  border-color: color-mix(in srgb, var(--workbench-border-color) calc(var(--content-border) * 100%), transparent) !important;
+}
 @media (max-width: 480px) {
   .brand span:last-child {
     display: none;

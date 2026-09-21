@@ -81,6 +81,7 @@ type Appearance = {
   modalOpacity: number;
   modalBlur: number;
   modalBackdropBlur: number;
+  panelSystemVersion: number;
 };
 const today = new Date().toISOString().slice(0, 10);
 const uid = () => crypto.randomUUID();
@@ -122,39 +123,40 @@ const defaultAppearance: Appearance = {
   brightness: 100,
   imageBlur: 0,
   glass: true,
-  blur: 22,
-  opacity: 72,
+  blur: 10,
+  opacity: 22,
   color: "#f7fbff",
   textColor: "#435b79",
   border: true,
-  borderOpacity: 55,
+  borderOpacity: 32,
   shadow: true,
-  shadowStrength: 22,
+  shadowStrength: 12,
   auto: true,
   fontScale: 100,
   titleScale: 100,
   decorations: false,
   contentGlass: true,
-  contentBlur: 18,
-  contentOpacity: 78,
+  contentBlur: 10,
+  contentOpacity: 22,
   contentColor: "#fbfdff",
-  contentBorderOpacity: 56,
-  contentHighlight: 52,
-  contentShadow: 18,
+  contentBorderOpacity: 32,
+  contentHighlight: 32,
+  contentShadow: 12,
   contentRadius: 24,
-  syncGlass: false,
-  workbenchOpacity: 76,
-  workbenchBlur: 26,
+  syncGlass: true,
+  workbenchOpacity: 22,
+  workbenchBlur: 10,
   workbenchColor: "#f7fbff",
   workbenchBorder: true,
   workbenchBorderColor: "#ffffff",
-  workbenchBorderOpacity: 64,
+  workbenchBorderOpacity: 32,
   workbenchShadow: true,
-  workbenchShadowStrength: 26,
+  workbenchShadowStrength: 12,
   workbenchRadius: 30,
   modalOpacity: 78,
   modalBlur: 20,
   modalBackdropBlur: 5,
+  panelSystemVersion: 2,
 };
 const uiThemes = [
   ["sakura", "樱花粉"],
@@ -232,10 +234,40 @@ function App() {
   const [categories, setCategories] = useState(() =>
     load<string[]>("mlw-cats", ["工作", "生活", "个人计划"]),
   );
-  const [appearance, setAppearance] = useState(() => ({
-    ...defaultAppearance,
-    ...load<Partial<Appearance>>("mlw-appearance", {}),
-  }));
+  const [appearance, setAppearance] = useState(() => {
+    const saved = load<Partial<Appearance>>("mlw-appearance", {});
+    if (saved.panelSystemVersion === 2) return { ...defaultAppearance, ...saved };
+    // Preserve the chosen theme/background while replacing the legacy per-panel
+    // controls with the new shared panel system on its first run.
+    return {
+      ...defaultAppearance,
+      ...saved,
+      glass: true,
+      contentGlass: true,
+      syncGlass: true,
+      opacity: defaultAppearance.opacity,
+      blur: defaultAppearance.blur,
+      color: defaultAppearance.contentColor,
+      border: true,
+      borderOpacity: defaultAppearance.contentBorderOpacity,
+      shadow: true,
+      shadowStrength: defaultAppearance.contentShadow,
+      workbenchOpacity: defaultAppearance.workbenchOpacity,
+      workbenchBlur: defaultAppearance.workbenchBlur,
+      workbenchColor: defaultAppearance.contentColor,
+      workbenchBorder: true,
+      workbenchBorderOpacity: defaultAppearance.contentBorderOpacity,
+      workbenchShadow: true,
+      workbenchShadowStrength: defaultAppearance.contentShadow,
+      contentOpacity: defaultAppearance.contentOpacity,
+      contentBlur: defaultAppearance.contentBlur,
+      contentColor: defaultAppearance.contentColor,
+      contentBorderOpacity: defaultAppearance.contentBorderOpacity,
+      contentHighlight: defaultAppearance.contentHighlight,
+      contentShadow: defaultAppearance.contentShadow,
+      panelSystemVersion: 2,
+    };
+  });
   const [titles, setTitles] = useState<PageTitles>(() => ({
     ...defaultTitles,
     ...load<Partial<PageTitles>>("mlw-page-titles", {}),
@@ -792,7 +824,7 @@ function App() {
                 </button>
               </div>
               {panel === "appearance" && (
-                <Appearance
+                <SimplifiedAppearance
                   a={appearance}
                   setA={setA}
                   reset={() => setAppearance(defaultAppearance)}
@@ -1853,6 +1885,97 @@ function Appearance({
     </div>
   );
 }
+function SimplifiedAppearance({
+  a,
+  setA,
+  reset,
+}: {
+  a: Appearance;
+  setA: (x: Partial<Appearance>) => void;
+  reset: () => void;
+}) {
+  const setPanels = (patch: {
+    opacity?: number;
+    blur?: number;
+    border?: number;
+    shadow?: number;
+    color?: string;
+  }) => {
+    const opacity = patch.opacity ?? a.contentOpacity;
+    const blur = patch.blur ?? a.contentBlur;
+    const border = patch.border ?? a.contentBorderOpacity;
+    const shadow = patch.shadow ?? a.contentShadow;
+    const color = patch.color ?? a.contentColor;
+    setA({
+      glass: true,
+      contentGlass: true,
+      syncGlass: true,
+      opacity,
+      blur,
+      color,
+      border: border > 0,
+      borderOpacity: border,
+      shadow: shadow > 0,
+      shadowStrength: shadow,
+      workbenchOpacity: opacity,
+      workbenchBlur: blur,
+      workbenchColor: color,
+      workbenchBorder: border > 0,
+      workbenchBorderOpacity: border,
+      workbenchShadow: shadow > 0,
+      workbenchShadowStrength: shadow,
+      contentOpacity: opacity,
+      contentBlur: blur,
+      contentColor: color,
+      contentBorderOpacity: border,
+      contentHighlight: border,
+      contentShadow: shadow,
+    });
+  };
+
+  return (
+    <div className="settings-body simplified-appearance">
+      <div>
+        <p className="setting-label">界面主题</p>
+        <div className="ui-theme-grid">
+          {uiThemes.map(([id, name]) => (
+            <button
+              key={id}
+              className={`ui-theme-choice ${id} ${a.uiTheme === id ? "selected" : ""}`}
+              onClick={() => setA({ uiTheme: id })}
+            >
+              <i />
+              <span>{name}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="appearance-divider">
+        <p className="setting-label">主界面面板</p>
+        <p className="hint">日、周、月、年中的所有框会同步使用这一套外观。</p>
+        <Range label="面板透明度" value={a.contentOpacity} min={0} max={100} unit="%" onChange={(opacity) => setPanels({ opacity })} />
+        <Range label="面板毛玻璃" value={a.contentBlur} min={0} max={40} unit="px" onChange={(blur) => setPanels({ blur })} />
+        <Range label="边框强度" value={a.contentBorderOpacity} min={0} max={100} unit="%" onChange={(border) => setPanels({ border })} />
+        <Range label="阴影强度" value={a.contentShadow} min={0} max={32} unit="px" onChange={(shadow) => setPanels({ shadow })} />
+        <label className="color">
+          <span>面板底色</span>
+          <input type="color" value={a.contentColor} onChange={(e) => setPanels({ color: e.target.value })} />
+        </label>
+      </div>
+
+      <div className="appearance-divider">
+        <p className="setting-label">任务详情窗口</p>
+        <Range label="窗口透明度" value={a.modalOpacity} min={0} max={100} unit="%" onChange={(modalOpacity) => setA({ modalOpacity })} />
+        <Range label="窗口毛玻璃" value={a.modalBlur} min={0} max={40} unit="px" onChange={(modalBlur) => setA({ modalBlur })} />
+        <Range label="打开窗口时背景模糊" value={a.modalBackdropBlur} min={0} max={20} unit="px" onChange={(modalBackdropBlur) => setA({ modalBackdropBlur })} />
+      </div>
+
+      <button className="quiet" onClick={reset}>恢复默认外观</button>
+    </div>
+  );
+}
+
 function Background({
   a,
   setA,
