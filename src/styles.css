@@ -2407,3 +2407,58 @@ input[type="range"] {
     grid-template-columns: 1fr;
   }
 }
+
+/* Keep these last: the generated base stylesheet also defines the dialog. */
+.editor-layer {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center !important;
+  padding: clamp(12px, 3vw, 36px);
+  overflow: hidden;
+}
+.editor-scrim {
+  background: rgb(32 53 76 / 18%) !important;
+  backdrop-filter: blur(var(--modal-backdrop-blur, 6px));
+  -webkit-backdrop-filter: blur(var(--modal-backdrop-blur, 6px));
+}
+.task-editor {
+  width: min(920px, calc(100vw - 24px)) !important;
+  height: auto !important;
+  max-height: calc(100vh - 24px);
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  padding: clamp(18px, 3vw, 30px) !important;
+  border: 1px solid rgb(255 255 255 / 72%) !important;
+  border-radius: 26px !important;
+  /* A reliable pale base keeps copy readable, even when the page panels are transparent. */
+  background: rgb(250 253 255 / var(--modal-alpha, 0.88)) !important;
+  box-shadow: 0 20px calc(var(--modal-shadow, 18px) * 3) rgb(32 53 76 / 22%) !important;
+  backdrop-filter: blur(var(--modal-blur, 20px)) saturate(1.12) !important;
+  -webkit-backdrop-filter: blur(var(--modal-blur, 20px)) saturate(1.12) !important;
+}
+.editor-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(16px, 3vw, 30px);
+  min-width: 0;
+}
+.editor-main,
+.editor-notes {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  min-width: 0;
+}
+.task-editor input,
+.task-editor select,
+.task-editor textarea { box-sizing: border-box; }
+.task-editor input[type="checkbox"] { width: 42px; }
+.task-editor footer,
+.delete-confirm,
+.editor-save { flex-wrap: wrap; }
+@media (max-width: 680px) {
+  .editor-layer { padding: 12px; }
+  .task-editor { width: calc(100% - 24px) !important; max-height: calc(100vh - 24px); border-radius: 22px !important; }
+  .editor-columns { grid-template-columns: minmax(0, 1fr); }
+  .task-editor footer { align-items: stretch; }
+}
