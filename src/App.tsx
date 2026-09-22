@@ -59,7 +59,6 @@ type Appearance = {
   auto: boolean;
   fontScale: number;
   titleScale: number;
-  decorations: boolean;
   contentGlass: boolean;
   contentBlur: number;
   contentOpacity: number;
@@ -87,34 +86,6 @@ const today = new Date().toISOString().slice(0, 10);
 const uid = () => crypto.randomUUID();
 const starterBackgroundId = "starter-rainy-window";
 const starterBackgroundUrl = `${import.meta.env.BASE_URL}backgrounds/rainy-window.png`;
-const presets = [
-  ["white", "纯净白"],
-  ["grey", "雾灰"],
-  ["pink", "淡樱粉"],
-  ["blue", "云朵蓝"],
-  ["mint", "薄荷绿"],
-  ["lilac", "浅丁香"],
-  ["butter", "奶油黄"],
-  ["dot-grey", "灰色波点"],
-  ["dot-pink", "粉色波点"],
-  ["dot-blue", "蓝色波点"],
-  ["grid-grey", "灰色格纹"],
-  ["grid-pink", "粉色格纹"],
-  ["grid-blue", "蓝色格纹"],
-  ["star-grey", "灰色星星"],
-  ["star-blue", "蓝色星星"],
-  ["star-pink", "粉色星星"],
-  ["cherry-blossom", "樱花小点"],
-  ["blue-daydream", "蓝色星梦"],
-  ["mint-clover", "薄荷四叶草"],
-  ["lavender-wishes", "紫色心愿"],
-  ["vanilla-cream", "香草格纹"],
-  ["silver-star", "银色星屿"],
-  ["pink-ribbon", "粉色蝴蝶结"],
-  ["little-music", "小小音符"],
-  ["cloudy-morning", "云朵清晨"],
-  ["soft-notebook", "柔软笔记本"],
-] as const;
 const defaultAppearance: Appearance = {
   theme: "blue-daydream",
   uiTheme: "sky",
@@ -134,7 +105,6 @@ const defaultAppearance: Appearance = {
   auto: true,
   fontScale: 100,
   titleScale: 100,
-  decorations: false,
   contentGlass: true,
   contentBlur: 10,
   contentOpacity: 22,
@@ -159,13 +129,13 @@ const defaultAppearance: Appearance = {
   panelSystemVersion: 2,
 };
 const uiThemes = [
-  ["sakura", "樱花粉"],
-  ["sky", "天空蓝"],
-  ["mint", "薄荷绿"],
-  ["lavender", "薰衣草紫"],
-  ["butter", "奶油黄"],
-  ["mist", "柔雾灰"],
-  ["clear", "清透白"],
+  ["sakura", "奶油樱粉"],
+  ["sky", "雾霾蓝"],
+  ["mint", "鼠尾草绿"],
+  ["lavender", "灰紫芋泥"],
+  ["butter", "燕麦奶油"],
+  ["mist", "柔雾米灰"],
+  ["clear", "清透象牙"],
 ] as const;
 type PlannerMode = "day" | "week" | "month" | "year";
 type PageTitle = { eyebrow: string; title: string; note: string };
@@ -280,7 +250,7 @@ function App() {
   >("week");
   const [weekOffset, setWeekOffset] = useState(0);
   const [filter, setFilter] = useState("全部");
-  const [panel, setPanel] = useState<"appearance" | "background" | "decor">(
+  const [panel, setPanel] = useState<"appearance" | "background">(
     "appearance",
   );
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -295,7 +265,6 @@ function App() {
   const [selectedDate, setSelectedDate] = useState(today);
   const [diaryText, setDiaryText] = useState("");
   const [mood, setMood] = useState("☁️");
-  const drag = useRef<{ x: number; y: number } | null>(null);
   useEffect(() => save("mlw-tasks", tasks), [tasks]);
   useEffect(() => save("mlw-diaries", diaries), [diaries]);
   useEffect(() => save("mlw-cats", categories), [categories]);
@@ -484,7 +453,7 @@ function App() {
       <div className="pattern-layer" />
       <aside className="sidebar glass">
         <div className="brand">
-          <span className="brand-mark">✦</span>
+          <Sparkles className="brand-logo" aria-hidden="true" />
           <span>my little world</span>
         </div>
         <nav>
@@ -544,7 +513,7 @@ function App() {
         <section className="workbench glass">
           <header className="planner-toolbar">
             <div className="planner-brand">
-              <span className="brand-mark">✦</span>
+              <Sparkles className="brand-logo" aria-hidden="true" />
               <b>My Little World</b>
             </div>
             <div className="planner-modes">
@@ -767,26 +736,6 @@ function App() {
             </section>
           )}
         </section>
-        {appearance.decorations && (
-          <div
-            className="decorations"
-            onPointerMove={(e) => {
-              if (drag.current) {
-                (e.currentTarget.firstChild as HTMLElement).style.transform =
-                  `translate(${e.clientX - drag.current.x}px,${e.clientY - drag.current.y}px)`;
-              }
-            }}
-            onPointerUp={() => (drag.current = null)}
-          >
-            <span
-              onPointerDown={(e) =>
-                (drag.current = { x: e.clientX, y: e.clientY })
-              }
-            >
-              ✦
-            </span>
-          </div>
-        )}
         {settingsOpen && (
           <div className="settings-wrap">
             <div
@@ -816,12 +765,6 @@ function App() {
                 >
                   背景
                 </button>
-                <button
-                  className={panel === "decor" ? "selected" : ""}
-                  onClick={() => setPanel("decor")}
-                >
-                  装饰
-                </button>
               </div>
               {panel === "appearance" && (
                 <SimplifiedAppearance
@@ -841,11 +784,10 @@ function App() {
                     await deleteBackground(id);
                     setBackgrounds((x) => x.filter((y) => y.id !== id));
                     if (appearance.image === id)
-                      setA({ mode: "preset", image: undefined });
+                      setA({ mode: "image", image: starterBackgroundId });
                   }}
                 />
               )}
-              {panel === "decor" && <Decor a={appearance} setA={setA} />}
             </aside>
           </div>
         )}
@@ -1993,19 +1935,7 @@ function Background({
 }) {
   return (
     <div className="settings-body">
-      <p className="hint">每次只使用一种安静图案，让任务始终清晰好读。</p>
-      <div className="preset-grid">
-        {presets.map(([id, name]) => (
-          <button
-            key={id}
-            className={`preset theme-${id} ${a.mode === "preset" && a.theme === id ? "selected" : ""}`}
-            onClick={() => setA({ mode: "preset", theme: id })}
-          >
-            <i />
-            <span>{name}</span>
-          </button>
-        ))}
-      </div>
+      <p className="hint">保留一张默认背景；以后你可以继续上传自己的图片。</p>
       <p className="setting-label">默认背景</p>
       <div className="bg-saved">
         <button
@@ -2052,40 +1982,6 @@ function Background({
           />
         </>
       )}
-    </div>
-  );
-}
-function Decor({
-  a,
-  setA,
-}: {
-  a: Appearance;
-  setA: (x: Partial<Appearance>) => void;
-}) {
-  return (
-    <div className="settings-body">
-      <p className="hint">
-        装饰与工作区分层显示。开启后，可直接拖动页面上的星星。
-      </p>
-      <label className="switch">
-        <span>显示装饰</span>
-        <input
-          type="checkbox"
-          checked={a.decorations}
-          onChange={(e) => setA({ decorations: e.target.checked })}
-        />
-        <i />
-      </label>
-      <div className="decor-library">
-        <span>✦</span>
-        <span>♡</span>
-        <span>☘</span>
-        <span>♪</span>
-        <span>〰</span>
-      </div>
-      <button className="quiet" onClick={() => setA({ decorations: false })}>
-        隐藏全部装饰
-      </button>
     </div>
   );
 }

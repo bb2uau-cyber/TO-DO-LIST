@@ -1052,6 +1052,30 @@ input[type="range"] {
   background: color-mix(in srgb, var(--content-color) calc(var(--content-alpha) * 100%), transparent) !important;
   border-color: color-mix(in srgb, var(--workbench-border-color) calc(var(--content-border) * 100%), transparent) !important;
 }
+
+/* Quieter Korean-inspired brand mark: no badge or filled circle. */
+.brand-logo {
+  width: 25px;
+  height: 25px;
+  flex: 0 0 auto;
+  color: var(--color-accent);
+  stroke-width: 1.7;
+  filter: drop-shadow(0 2px 5px color-mix(in srgb, var(--color-accent) 18%, transparent));
+}
+.planner-brand .brand-logo { width: 23px; height: 23px; }
+
+/* Completed tasks use a single check mark without a green filled badge. */
+.done .check {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: var(--color-ink) !important;
+  transform: none !important;
+}
+.done .check svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.3;
+}
 @media (max-width: 480px) {
   .brand span:last-child {
     display: none;
@@ -1557,68 +1581,68 @@ input[type="range"] {
   transition: color var(--dur-fast) var(--ease-out);
 }
 .ui-sakura {
-  --color-paper: oklch(96.5% 0.022 352);
-  --color-paper-2: oklch(93% 0.04 352);
-  --color-ink: oklch(38% 0.04 350);
-  --color-muted: oklch(55% 0.025 350);
-  --color-accent: oklch(71% 0.095 350);
-  --color-focus: oklch(61% 0.14 350);
-  --color-rule: oklch(84% 0.028 350);
-  --color-success: oklch(65% 0.09 155);
+  --color-paper: oklch(97.5% 0.012 350);
+  --color-paper-2: oklch(94.5% 0.024 350);
+  --color-ink: oklch(39% 0.025 345);
+  --color-muted: oklch(58% 0.018 345);
+  --color-accent: oklch(79% 0.055 350);
+  --color-focus: oklch(65% 0.075 350);
+  --color-rule: oklch(87% 0.018 350);
+  --color-success: oklch(62% 0.045 155);
 }
 .ui-sky {
-  --color-paper: oklch(97% 0.015 240);
-  --color-paper-2: oklch(94% 0.025 240);
-  --color-ink: oklch(40% 0.04 250);
-  --color-muted: oklch(56% 0.028 250);
-  --color-accent: oklch(73% 0.09 245);
-  --color-focus: oklch(59% 0.15 245);
-  --color-rule: oklch(84% 0.025 245);
+  --color-paper: oklch(97.5% 0.01 235);
+  --color-paper-2: oklch(94.5% 0.02 235);
+  --color-ink: oklch(40% 0.025 245);
+  --color-muted: oklch(58% 0.018 245);
+  --color-accent: oklch(77% 0.048 240);
+  --color-focus: oklch(64% 0.072 240);
+  --color-rule: oklch(87% 0.016 240);
 }
 .ui-mint {
-  --color-paper: oklch(97% 0.02 162);
-  --color-paper-2: oklch(94% 0.035 162);
-  --color-ink: oklch(42% 0.04 158);
-  --color-muted: oklch(57% 0.03 158);
-  --color-accent: oklch(73% 0.08 160);
-  --color-focus: oklch(58% 0.14 160);
-  --color-rule: oklch(84% 0.028 160);
+  --color-paper: oklch(97.5% 0.012 150);
+  --color-paper-2: oklch(94.5% 0.022 150);
+  --color-ink: oklch(41% 0.025 155);
+  --color-muted: oklch(58% 0.018 155);
+  --color-accent: oklch(77% 0.045 155);
+  --color-focus: oklch(63% 0.065 155);
+  --color-rule: oklch(87% 0.017 155);
 }
 .ui-lavender {
-  --color-paper: oklch(97% 0.018 300);
-  --color-paper-2: oklch(94% 0.035 300);
-  --color-ink: oklch(41% 0.04 300);
-  --color-muted: oklch(56% 0.03 300);
-  --color-accent: oklch(72% 0.09 300);
-  --color-focus: oklch(59% 0.15 300);
-  --color-rule: oklch(84% 0.027 300);
+  --color-paper: oklch(97.5% 0.011 300);
+  --color-paper-2: oklch(94.5% 0.022 300);
+  --color-ink: oklch(41% 0.024 300);
+  --color-muted: oklch(58% 0.018 300);
+  --color-accent: oklch(76% 0.046 300);
+  --color-focus: oklch(63% 0.068 300);
+  --color-rule: oklch(87% 0.017 300);
 }
 .ui-butter {
-  --color-paper: oklch(98% 0.025 92);
-  --color-paper-2: oklch(95% 0.045 92);
-  --color-ink: oklch(43% 0.045 82);
-  --color-muted: oklch(57% 0.032 82);
-  --color-accent: oklch(78% 0.1 88);
-  --color-focus: oklch(61% 0.15 88);
-  --color-rule: oklch(86% 0.03 88);
+  --color-paper: oklch(98% 0.014 88);
+  --color-paper-2: oklch(95% 0.028 88);
+  --color-ink: oklch(42% 0.026 78);
+  --color-muted: oklch(59% 0.019 78);
+  --color-accent: oklch(83% 0.055 88);
+  --color-focus: oklch(66% 0.078 88);
+  --color-rule: oklch(88% 0.02 88);
 }
 .ui-mist {
-  --color-paper: oklch(96.5% 0.008 260);
-  --color-paper-2: oklch(93% 0.014 260);
-  --color-ink: oklch(38% 0.02 260);
-  --color-muted: oklch(55% 0.016 260);
-  --color-accent: oklch(70% 0.035 260);
-  --color-focus: oklch(55% 0.08 260);
-  --color-rule: oklch(82% 0.012 260);
+  --color-paper: oklch(97% 0.008 75);
+  --color-paper-2: oklch(94% 0.014 75);
+  --color-ink: oklch(39% 0.016 70);
+  --color-muted: oklch(58% 0.012 70);
+  --color-accent: oklch(75% 0.022 70);
+  --color-focus: oklch(60% 0.04 70);
+  --color-rule: oklch(86% 0.012 70);
 }
 .ui-clear {
-  --color-paper: oklch(100% 0.003 250);
-  --color-paper-2: oklch(96% 0.007 250);
-  --color-ink: oklch(33% 0.018 250);
-  --color-muted: oklch(54% 0.013 250);
-  --color-accent: oklch(73% 0.028 250);
-  --color-focus: oklch(54% 0.1 250);
-  --color-rule: oklch(84% 0.008 250);
+  --color-paper: oklch(99% 0.006 95);
+  --color-paper-2: oklch(96% 0.012 95);
+  --color-ink: oklch(36% 0.018 80);
+  --color-muted: oklch(57% 0.012 80);
+  --color-accent: oklch(81% 0.026 92);
+  --color-focus: oklch(63% 0.052 92);
+  --color-rule: oklch(88% 0.01 92);
 }
 .ui-theme-grid {
   display: grid;
@@ -1647,25 +1671,25 @@ input[type="range"] {
     color-mix(in srgb, var(--color-paper) 68%, transparent);
 }
 .ui-theme-choice.sakura i {
-  background: oklch(71% 0.095 350);
+  background: oklch(79% 0.055 350);
 }
 .ui-theme-choice.sky i {
-  background: oklch(73% 0.09 245);
+  background: oklch(77% 0.048 240);
 }
 .ui-theme-choice.mint i {
-  background: oklch(73% 0.08 160);
+  background: oklch(77% 0.045 155);
 }
 .ui-theme-choice.lavender i {
-  background: oklch(72% 0.09 300);
+  background: oklch(76% 0.046 300);
 }
 .ui-theme-choice.butter i {
-  background: oklch(78% 0.1 88);
+  background: oklch(83% 0.055 88);
 }
 .ui-theme-choice.mist i {
-  background: oklch(70% 0.035 260);
+  background: oklch(75% 0.022 70);
 }
 .ui-theme-choice.clear i {
-  background: oklch(73% 0.028 250);
+  background: oklch(81% 0.026 92);
 }
 .ui-theme-choice.selected {
   border: 2px solid var(--color-accent);
